@@ -6,6 +6,6 @@ module.exports = {
     ],
     //> We default to this because this is where GitHub Pages pulls from.
     outputDirectory: './docs/',
-    annotationBlockFirst: '//>',
-    annotationBlockRest: '//',
+    annotationStartMark: '//>',
+    annotationContinueMark: '//',
 }

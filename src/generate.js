@@ -26,6 +26,11 @@ const encodeHTML = code => {
     });
 }
 
+const markedOptions = {
+    sanitize: true,
+    sanitizer: encodeHTML,
+}
+
 const linesToLinePairs = (line, config) => {
     const linePairs = [];
     let docLine = '';
@@ -37,7 +42,7 @@ const linesToLinePairs = (line, config) => {
             if (lastLine && lastLine[0]) {
                 linePairs.push(['', '', '']);
             }
-            linePairs.push([docLine, encodeHTML(codeLine), lineNumber]);
+            linePairs.push([marked(docLine, markedOptions), encodeHTML(codeLine), lineNumber]);
         } else {
             linePairs.push(['', encodeHTML(codeLine), lineNumber]);
         }
@@ -80,13 +85,7 @@ const createAndSavePage = async (sourcePath, config) => {
         if (err) logErr();
 
         const sourceLines = linesToLinePairs(content, config).map(([doc, source, lineNumber]) => {
-            return `<div class="line">
-                <div class="doc">${marked(doc)}</div>
-                <pre class="source javascript">
-                    <strong class="lineNumber">${lineNumber}</strong>
-                    ${source}
-                </pre>
-            </div>`;
+            return `<div class="line"><div class="doc">${doc}</div><pre class="source javascript"><strong class="lineNumber">${lineNumber}</strong>${source}</pre></div>`;
         }).join('\n');
 
         const annotatedPage = resolveTemplate(SOURCE_PAGE, {

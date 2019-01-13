@@ -19,6 +19,8 @@ which will run Litterate with the default configuration, found in `./src/default
 
 You can also install `litterate` as a command line tool using `npm install --global litterate`.
 
+By default, Litterate will count comment blocks starting with `//>` on a newline as annotation blocks (see files under `./src/` for examples). This means Litterate works by default for C-style comment languages (JavaScript, Java, C[++], Rust's normal comments). Litterate can be configured to work with pretty much any language that has beginning-of-line comment delimiters, like `#` in Python or `;` in a variety of other languages.
+
 You can customize Litterate's output with command line arguments (run `litterate --help` to see options), or with a configuration file, which you can pass to `litterate` with the `--config` command line option.
 
 ## Configuration options

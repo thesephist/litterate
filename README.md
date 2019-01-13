@@ -1,8 +1,11 @@
 # litterate
 
+[![npm litterate](https://img.shields.io/npm/v/litterate.svg)](http://npm.im/litterate)
+[![install size](https://packagephobia.now.sh/badge?p=litterate)](https://packagephobia.now.sh/result?p=litterate)
+
 Litterate is a command line tool to generate beautiful literate programming-style description of your code from comment annotations.
 
-Litterate's own source code is annotated with `litterate`, on [GitHub Pages](https://thesephist.github.io/litterate/).
+Check out Litterate's own source code, annotated with `litterate`, on [GitHub Pages](https://thesephist.github.io/litterate/).
 
 ## Usage
 
@@ -13,6 +16,8 @@ npx litterate
 ```
 
 which will run Litterate with the default configuration, found in `./src/defaults.js`.
+
+You can also install `litterate` as a command line tool using `npm install --global litterate`.
 
 You can customize Litterate's output with command line arguments (run `litterate --help` to see options), or with a configuration file, which you can pass to `litterate` with the `--config` command line option.
 
@@ -26,7 +31,7 @@ Name of your project, which shows up as the header and title of the generated do
 
 ### `description`
 
-Description text for your project, shown in the generated site. You can use full Markdown in the description. We use `marked` to parse Markdown.
+Description text for your project, shown in the generated site. You can use full Markdown in the description. Litterate uses `marked` to parse Markdown.
 
 ### `files`
 
@@ -56,7 +61,7 @@ By default, Litterate only counts comment blocks that look like this, as annotat
 
 ```javascript
 //> Start of annotation block
-//  cotinued annotation block
+//  continued annotation block
 function add(a, b) {
     // comment that isn't counted
     return a + b;
@@ -71,6 +76,4 @@ If you wanted to count all comments, for example, you could override `annotation
 
 - `yarn install` to install dependencies (npm should work for these commands too, but the project prefers Yarn and we use a Yarn lockfile.)
 
-- `yarn test` to run tests (which aren't there yet)
-
-- `yarn docs` to run Litterate on itself, with the configuration file in the repo.
+- `yarn docs` to run Litterate on itself, with the configuration file in the repo. Note that this generates pages with the `baseURL` set to `/litterate`, for GitHub pages. Run it with `--baseURL /` to use the default root URL.

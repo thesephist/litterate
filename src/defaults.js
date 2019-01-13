@@ -2,7 +2,7 @@
 //  for any options
 module.exports = {
     files: [
-        './src/*.js',
+        './src/**/*.js',
     ],
     //> We default to this because this is where GitHub Pages pulls from.
     outputDirectory: './docs/',

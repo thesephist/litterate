@@ -4,6 +4,7 @@
 
 //> We use `minimist` to parse command line arguments (`process.argv`)
 const minimist = require('minimist');
+const glob = require('glob');
 const DEFAULTS = require('./defaults.js');
 const { generateLitteratePages } = require('./generate.js');
 
@@ -23,7 +24,9 @@ const CONFIG = Object.assign(
 for (const [optionName, optionValue] of Object.entries(ARGS)) {
     switch (optionName) {
         case '_':
-            CONFIG.files = optionValue;
+            if (optionValue.length > 0) {
+                CONFIG.files = optionValue;
+            }
             break;
         case 'o':
         case 'output':
@@ -34,4 +37,18 @@ for (const [optionName, optionValue] of Object.entries(ARGS)) {
     }
 }
 
-generateLitteratePages(CONFIG);
+//> File names are given as glob patterns, which we should expand out.
+let sourceFiles = [];
+for (const globPattern of CONFIG.files) {
+    try {
+        const files = glob.sync(globPattern, {
+            nodir: true,
+            ignore: ['**/node_modules/'],
+        });
+        sourceFiles = sourceFiles.concat(files);
+    } catch (err) {
+        console.log(`Error encountered while looking for matching source files: ${err}`);
+    }
+}
+
+generateLitteratePages(sourceFiles, CONFIG);

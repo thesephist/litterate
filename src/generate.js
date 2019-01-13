@@ -106,14 +106,13 @@ const createAndSavePage = async (sourcePath, config) => {
     });
 }
 
-const generateLitteratePages = async ({
-    files,
+const generateLitteratePages = async (sourceFiles, {
     outputDirectory,
     annotationStartMark,
     annotationContinueMark,
     //... other options to come
 }) => {
-
+    console.log(`Called with ${sourceFiles.join(', ')} to ${outputDirectory}, start ${annotationStartMark} :: ${annotationContinueMark}`);
 }
 
 module.exports = {

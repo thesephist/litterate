@@ -3,6 +3,7 @@
 //  figuring out the right options to pass to the docs generator.
 
 //> We use `minimist` to parse command line arguments (`process.argv`)
+const path = require('path');
 const minimist = require('minimist');
 const glob = require('glob');
 const DEFAULTS = require('./defaults.js');
@@ -50,5 +51,7 @@ for (const globPattern of CONFIG.files) {
         console.log(`Error encountered while looking for matching source files: ${err}`);
     }
 }
+
+CONFIG.baseURL = path.join(CONFIG.baseURL, '/');
 
 generateLitteratePages(sourceFiles, CONFIG);

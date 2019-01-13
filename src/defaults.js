@@ -4,6 +4,7 @@ module.exports = {
     projectName: 'Litterate Project',
     projectDescription: '`litterate` is a tool to generate beautiful literate programming-style description of your code from comment annotations.',
     wrapLimit: 0, // don't wrap lines
+    baseURL: '/litterate',
     files: [
         './src/**/*.js',
     ],

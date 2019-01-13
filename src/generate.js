@@ -52,12 +52,13 @@ const getOutputPathForSourcePath = (sourcePath, config) => {
 const populateIndexPage = (sourceFiles, config) => {
     const files = sourceFiles.map(sourcePath => {
         const outputPath = getOutputPathForSourcePath(sourcePath, config);
-        return `<p class="sourceLink"><a href="${path.relative(config.outputDirectory, outputPath)}">${sourcePath}</a></p>`;
+        return `<p class="sourceLink"><a href="${config.baseURL}${path.relative(config.outputDirectory, outputPath)}">${sourcePath}</a></p>`;
     });
     return resolveTemplate(INDEX_PAGE, {
         title: config.projectName,
         description: renderMarkdown(config.projectDescription),
         sourcesList: files.join('\n'),
+        baseURL: config.baseURL,
     });
 }
 
@@ -129,6 +130,7 @@ const createAndSavePage = async (sourcePath, config) => {
         const annotatedPage = resolveTemplate(SOURCE_PAGE, {
             title: sourcePath,
             lines: sourceLines,
+            baseURL: config.baseURL,
         });
         const outputFilePath = getOutputPathForSourcePath(sourcePath, config);
         mkdirp(path.parse(outputFilePath).dir, (err) => {

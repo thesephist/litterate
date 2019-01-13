@@ -7,17 +7,17 @@ const path = require('path');
 const mkdirp = require('mkdirp');
 const marked = require('marked');
 
-const INDEX_PAGE = fs.readFileSync(path.resolve(__dirname, '../templates/index.html'));
-const SOURCE_PAGE = fs.readFileSync(path.resolve(__dirname, '../templates/source.html'));
+const INDEX_PAGE = fs.readFileSync(path.resolve(__dirname, '../templates/index.html'), 'utf8');
+const STYLES_CSS = fs.readFileSync(path.resolve(__dirname, '../templates/main.css'), 'utf8');
+const SOURCE_PAGE = fs.readFileSync(path.resolve(__dirname, '../templates/source.html'), 'utf8');
 
-const resolveTemplate = (templateContent, templateValues) => {
-    for (const [key, value] of Object.entries(templateValues)) {
-        templateContent = templateContent.replace(
-            new RegExp(`/{{${key}}}/`, 'g'),
-            value
-        );
+const wrapLine = (line, limit) => {
+    const len = line.length;
+    let result = '';
+    for (let countedChars = 0; countedChars < len; countedChars += limit) {
+        result += line.substr(countedChars, limit) + '\n';
     }
-    return templateContent;
+    return result;
 }
 
 const encodeHTML = code => {
@@ -30,10 +30,48 @@ const markedOptions = {
     sanitize: true,
     sanitizer: encodeHTML,
 }
+const renderMarkdown = str => marked(str, markedOptions);
 
-const linesToLinePairs = (line, config) => {
+const resolveTemplate = (templateContent, templateValues) => {
+    for (const [key, value] of Object.entries(templateValues)) {
+        templateContent = templateContent.replace(
+            new RegExp(`{{${key}}}`, 'g'),
+            value
+        );
+    }
+    return templateContent;
+}
+
+const getOutputPathForSourcePath = (sourcePath, config) => {
+    return path.join(
+        config.outputDirectory,
+        path.parse(sourcePath).base + '.html'
+    );
+}
+
+const populateIndexPage = (sourceFiles, config) => {
+    const files = sourceFiles.map(sourcePath => {
+        const outputPath = getOutputPathForSourcePath(sourcePath, config);
+        return `<p><a href="${path.relative(config.outputDirectory, outputPath)}">${sourcePath}</a></p>`;
+    });
+    return resolveTemplate(INDEX_PAGE, {
+        title: config.projectName,
+        description: renderMarkdown(config.projectDescription),
+        sourcesList: files.join('\n'),
+    });
+}
+
+const linesToLinePairs = (lines, config) => {
     const linePairs = [];
     let docLine = '';
+
+    const processCodeLine = codeLine => {
+        if (config.wrapLimit !== 0) {
+            return wrapLine(encodeHTML(codeLine), config.wrapLimit);
+        } else {
+            return encodeHTML(codeLine);
+        }
+    }
 
     let inAnnotationComment = false;
     const pushPair = (codeLine, lineNumber) => {
@@ -42,9 +80,9 @@ const linesToLinePairs = (line, config) => {
             if (lastLine && lastLine[0]) {
                 linePairs.push(['', '', '']);
             }
-            linePairs.push([marked(docLine, markedOptions), encodeHTML(codeLine), lineNumber]);
+            linePairs.push([renderMarkdown(docLine), processCodeLine(codeLine), lineNumber]);
         } else {
-            linePairs.push(['', encodeHTML(codeLine), lineNumber]);
+            linePairs.push(['', processCodeLine(codeLine), lineNumber]);
         }
         docLine = '';
     }
@@ -53,15 +91,15 @@ const linesToLinePairs = (line, config) => {
         if (line.trim().startsWith(config.annotationStartMark)) {
             docLine = line.replace(config.annotationStartMark, '').trim();
         } else {
-            docLine += ' ' + line.replace(annotationContinueMark, '').trim();
+            docLine += ' ' + line.replace(config.annotationContinueMark, '').trim();
         }
     };
 
-    lines.split('\n').forEach((line, idx) => {
+    lines.forEach((line, idx) => {
         if (line.trim().startsWith(config.annotationStartMark)) {
             inAnnotationComment = true;
             pushComment(line);
-        } else if (line.trim().startsWith(annotationContinueMark)) {
+        } else if (line.trim().startsWith(config.annotationContinueMark)) {
             if (inAnnotationComment) {
                 pushComment(line)
             } else {
@@ -84,7 +122,7 @@ const createAndSavePage = async (sourcePath, config) => {
     fs.readFile(sourcePath, 'utf8', (err, content) => {
         if (err) logErr();
 
-        const sourceLines = linesToLinePairs(content, config).map(([doc, source, lineNumber]) => {
+        const sourceLines = linesToLinePairs(content.split('\n'), config).map(([doc, source, lineNumber]) => {
             return `<div class="line"><div class="doc">${doc}</div><pre class="source javascript"><strong class="lineNumber">${lineNumber}</strong>${source}</pre></div>`;
         }).join('\n');
 
@@ -92,10 +130,7 @@ const createAndSavePage = async (sourcePath, config) => {
             title: sourcePath,
             lines: sourceLines,
         });
-        const outputFilePath = path.join(
-            config.outputDirectory,
-            path.parse(sourcePath).base + '.html'
-        );
+        const outputFilePath = getOutputPathForSourcePath(sourcePath, config);
         mkdirp(path.parse(outputFilePath).dir, (err) => {
             if (err) logErr();
 
@@ -106,13 +141,27 @@ const createAndSavePage = async (sourcePath, config) => {
     });
 }
 
-const generateLitteratePages = async (sourceFiles, {
-    outputDirectory,
-    annotationStartMark,
-    annotationContinueMark,
-    //... other options to come
-}) => {
-    console.log(`Called with ${sourceFiles.join(', ')} to ${outputDirectory}, start ${annotationStartMark} :: ${annotationContinueMark}`);
+const generateLitteratePages = async (sourceFiles, config) => {
+    const {
+        outputDirectory,
+    } = config;
+
+    fs.writeFile(
+        path.resolve(outputDirectory, 'index.html'),
+        populateIndexPage(sourceFiles, config),
+        'utf8', err => {
+            if (err) console.error(`Error encountered while writing index.html to disk: ${err}`);
+        }
+    );
+
+    fs.writeFile(path.resolve(outputDirectory, 'main.css'), STYLES_CSS, 'utf8', err => {
+        if (err) console.error(`Error encountered while writing main.css to disk: ${err}`);
+    });
+
+    for (const sourceFile of sourceFiles) {
+        await createAndSavePage(sourceFile, config);
+        console.log(`Annotated ${sourceFile}`);
+    }
 }
 
 module.exports = {

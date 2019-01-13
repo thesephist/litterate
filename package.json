@@ -7,7 +7,7 @@
   "author": "Linus Lee <linus@thesephist.com>",
   "license": "MIT",
   "scripts": {
-    "self": "node ./src/index.js",
+    "docs": "node ./src/index.js",
     "test": "mocha test/"
   },
   "bin": {

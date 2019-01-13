@@ -145,29 +145,33 @@ const linesToLinePairs = (lines, config) => {
 
 //> This function is called for each source file, to process and save
 //  the Litterate version of the source file in the correct place.
-const createAndSavePage = async (sourcePath, config) => {
+const createAndSavePage = (sourcePath, config) => {
     const logErr = (err) => {
         if (err) console.error(`Error writing ${sourcePath} annotated page: ${err}`);
     }
 
-    fs.readFile(sourcePath, 'utf8', (err, content) => {
-        if (err) logErr();
-
-        const sourceLines = linesToLinePairs(content.split('\n'), config).map(([doc, source, lineNumber]) => {
-            return `<div class="line"><div class="doc">${doc}</div><pre class="source javascript"><strong class="lineNumber">${lineNumber}</strong>${source}</pre></div>`;
-        }).join('\n');
-
-        const annotatedPage = resolveTemplate(SOURCE_PAGE, {
-            title: sourcePath,
-            lines: sourceLines,
-            baseURL: config.baseURL,
-        });
-        const outputFilePath = getOutputPathForSourcePath(sourcePath, config);
-        mkdirp(path.parse(outputFilePath).dir, (err) => {
+    return new Promise((res, rej) => {
+        fs.readFile(sourcePath, 'utf8', (err, content) => {
             if (err) logErr();
 
-            fs.writeFile(outputFilePath, annotatedPage, 'utf8', err => {
+            const sourceLines = linesToLinePairs(content.split('\n'), config).map(([doc, source, lineNumber]) => {
+                return `<div class="line"><div class="doc">${doc}</div><pre class="source javascript"><strong class="lineNumber">${lineNumber}</strong>${source}</pre></div>`;
+            }).join('\n');
+
+            const annotatedPage = resolveTemplate(SOURCE_PAGE, {
+                title: sourcePath,
+                lines: sourceLines,
+                baseURL: config.baseURL,
+            });
+            const outputFilePath = getOutputPathForSourcePath(sourcePath, config);
+            mkdirp(path.parse(outputFilePath).dir, (err) => {
                 if (err) logErr();
+
+                fs.writeFile(outputFilePath, annotatedPage, 'utf8', err => {
+                    if (err) logErr();
+
+                    res();
+                });
             });
         });
     });
@@ -199,7 +203,7 @@ const generateLitteratePages = async (sourceFiles, config) => {
 
     //> Process source files that need to be annotated
     for (const sourceFile of sourceFiles) {
-        await createAndSavePage(sourceFile, config);
+        createAndSavePage(sourceFile, config);
         console.log(`Annotated ${sourceFile}`);
     }
 }

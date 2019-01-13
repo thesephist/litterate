@@ -14,8 +14,49 @@ const { generateLitteratePages } = require('./generate.js');
 //> Read + parse command line arguments into a dictionary (object)
 const ARGS = minimist(process.argv.slice(2));
 
+if (ARGS.help || ARGS.h) {
+    const helpMessage = `
+    litterate - generate beautiful literate programming-style code annotations
+    Read the full documentation at https://github.com/thesephist/litterate
+
+    Basic usage
+    ---
+    litterate --config your-litterate-config.js
+    litterate [options] [files]
+
+    Command-line options
+        (these can be customized in a configuration file as well)
+    ---
+    --config    Specify a JS or JSON file for configuration
+
+    -n, --name  Name of your project, shown in the generated site.
+
+    -d, --description
+                Description text for your project, shown in the generated site.
+
+    -w, --wrap  If 0, long lines of source code will never be wrapped.
+                If any other number, litterate will wrap long lines to the given
+                number of characters per line.
+
+    -b, --baseURL
+                By default, the generated website assumes the root URL of the site
+                is '/', but for GitHub Pages and other sites, you may want to set
+                a different base URL for the site. This allows you to set a different
+                site base URL.
+
+    -v, --verbose
+                Verbose output while litterate runs, useful for debugging.
+
+    -o, --output
+                Specify a different destination directory for the generated docs site.
+                By default, litterate writes to ./docs/.
+`;
+    console.log(helpMessage);
+    process.exit();
+}
+
 const userConfigPath = ARGS['config'];
-const USER_CONFIG = userConfigPath ? require(userConfigPath) : {};
+const USER_CONFIG = userConfigPath ? require(path.resolve(process.cwd(), userConfigPath)) : {};
 const CONFIG = Object.assign(
     {},
     DEFAULTS,
@@ -26,6 +67,9 @@ const CONFIG = Object.assign(
 //  any `CONFIG` file option.
 for (const [optionName, optionValue] of Object.entries(ARGS)) {
     switch (optionName) {
+        case 'config':
+            // do nothing -- ignore
+            break;
         case '_':
             if (optionValue.length > 0) {
                 CONFIG.files = optionValue;

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 //> This file is the entry point for the command-line utility,
-//  and is focused on handling processing CLI arguments and
+//  and is focused on handling and processing CLI arguments and
 //  figuring out the right options to pass to the docs generator.
 
 //> We use `minimist` to parse command line arguments (`process.argv`)
@@ -23,6 +23,7 @@ if (ARGS.help || ARGS.h) {
     ---
     litterate --config your-litterate-config.js
     litterate [options] [files]
+        (if no files are specified, litterate runs on src/**/*.js)
 
     Command-line options
         (these can be customized in a configuration file as well)
@@ -57,13 +58,15 @@ if (ARGS.help || ARGS.h) {
 
 const userConfigPath = ARGS['config'];
 const USER_CONFIG = userConfigPath ? require(path.resolve(process.cwd(), userConfigPath)) : {};
+//> This is an easy way to merge two configuration options, with `USER_CONFIG` overriding anything
+//  specified in defaults.
 const CONFIG = Object.assign(
     {},
     DEFAULTS,
     USER_CONFIG
 );
 
-//> Reconcile `ARGS` and `CONFIG` together; `ARGS` overrides
+//> Reconcile `ARGS`, the command-line arguments, and `CONFIG` together; `ARGS` overrides
 //  any `CONFIG` file option.
 for (const [optionName, optionValue] of Object.entries(ARGS)) {
     switch (optionName) {
@@ -108,9 +111,15 @@ for (const [optionName, optionValue] of Object.entries(ARGS)) {
 let sourceFiles = [];
 for (const globPattern of CONFIG.files) {
     try {
+        //> Calling the synchronous API here is find, since this is a CLI with one event
+        //  in the loop, but it may be faster to switch to the async version later.
         const files = glob.sync(globPattern, {
+            //> This option excludes any directories from the returned match, which we want.
             nodir: true,
-            ignore: ['**/node_modules/'],
+            //> Ignore node modules in matches
+            ignore: [
+                '**/node_modules/'
+            ],
         });
         sourceFiles = sourceFiles.concat(files);
     } catch (err) {
@@ -118,6 +127,7 @@ for (const globPattern of CONFIG.files) {
     }
 }
 
+//> Ensure that the base URL ends with a `/`
 CONFIG.baseURL = path.join(CONFIG.baseURL, '/');
 
 if (CONFIG.verbose) {

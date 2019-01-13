@@ -32,6 +32,8 @@ Description text for your project, shown in the generated site. You can use full
 
 An array of file paths to annotate. You can specify file paths as full paths or [glob patterns](https://en.wikipedia.org/wiki/Glob_(programming)). On the main page of the generated site, links to individual files will show up in the order they're listed here.
 
+By default, Litterate annotates all files that match `./src/**/*.js`.
+
 ### `wrap`
 
 If 0, long lines of source code will never be wrapped. If any other number, Litterate will wrap long lines to the given number of characters per line.
@@ -47,6 +49,23 @@ Verbose output while Litterate runs, useful for debugging.
 ### `output`
 
 Specify a different destination directory for the generated docs site. By default, Litterate writes to `./docs/`.
+
+### `annotationStartMark` and `annotationContinueMark`
+
+By default, Litterate only counts comment blocks that look like this, as annotation blocks.
+
+```javascript
+//> Start of annotation block
+//  cotinued annotation block
+function add(a, b) {
+    // comment that isn't counted
+    return a + b;
+}
+```
+
+This allows you to write `// TODO` comments and other logistical comments without having them be parsed into Litterate annotations. If you'd rather use a different prefix to mark the start and subsequent lines of Litterate anotation blocks, you can override `annotationStartMark` (defaults to `//>`) and `annotationContinueMark` (defaults to `//`).
+
+If you wanted to count all comments, for example, you could override `annotationStartMark` to `//`.
 
 ## Contributing
 

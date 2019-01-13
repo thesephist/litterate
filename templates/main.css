@@ -14,6 +14,7 @@ main {
     align-items: flex-start;
     margin: 0 auto;
     min-height: 100vh;
+    position: relative; /* to size ::before to full height */
 }
 main::before {
     content: '';
@@ -62,7 +63,6 @@ h6 {
     flex-grow: 0;
     padding-left: 32px;
     padding-right: 32px;
-    background: #fff;
 }
 .doc p {
     margin: 0;

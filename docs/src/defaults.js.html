@@ -19,19 +19,20 @@
         </div>
         <div class="line"><div class="doc"><p>The default configuration file if the user doesn&#39;t specify a value for any options</p>
 </div><pre class="source javascript"><strong class="lineNumber">3</strong>module.exports = {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">4</strong>    projectName: 'Litterate Project',</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">5</strong>    projectDescription: '`litterate` is a tool to generate beautiful literate programming-style description of your code from comment annotations.',</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">6</strong>    wrapLimit: 0, // don't wrap lines</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">4</strong>    name: 'Litterate Project',</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">5</strong>    description: '`litterate` is a tool to generate beautiful literate programming-style description of your code from comment annotations.',</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">6</strong>    wrap: 0, // don't wrap lines</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">7</strong>    baseURL: '/litterate',</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">8</strong>    files: [</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">9</strong>        './src/**/*.js',</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">10</strong>    ],</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">8</strong>    verbose: false,</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">9</strong>    files: [</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">10</strong>        './src/**/*.js',</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">11</strong>    ],</pre></div>
 <div class="line"><div class="doc"><p>We default to this because this is where GitHub Pages pulls from.</p>
-</div><pre class="source javascript"><strong class="lineNumber">12</strong>    outputDirectory: './docs/',</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">13</strong>    annotationStartMark: '//&#62;',</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">14</strong>    annotationContinueMark: '//',</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">15</strong>}</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">16</strong></pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">13</strong>    outputDirectory: './docs/',</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">14</strong>    annotationStartMark: '//&#62;',</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">15</strong>    annotationContinueMark: '//',</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">16</strong>}</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">17</strong></pre></div>
     </main>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github-gist.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>

@@ -72,8 +72,8 @@
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">55</strong>        return `&#60;p class="sourceLink"&#62;&#60;a href="${config.baseURL}${path.relative(config.outputDirectory, outputPath)}"&#62;${sourcePath}&#60;/a&#62;&#60;/p&#62;`;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">56</strong>    });</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">57</strong>    return resolveTemplate(INDEX_PAGE, {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">58</strong>        title: config.projectName,</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">59</strong>        description: renderMarkdown(config.projectDescription),</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">58</strong>        title: config.name,</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">59</strong>        description: renderMarkdown(config.description),</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">60</strong>        sourcesList: files.join('\n'),</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">61</strong>        baseURL: config.baseURL,</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">62</strong>    });</pre></div>
@@ -84,8 +84,8 @@
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">67</strong>    let docLine = '';</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">68</strong></pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">69</strong>    const processCodeLine = codeLine =&#62; {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">70</strong>        if (config.wrapLimit !== 0) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">71</strong>            return wrapLine(encodeHTML(codeLine), config.wrapLimit);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">70</strong>        if (config.wrap !== 0) {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">71</strong>            return wrapLine(encodeHTML(codeLine), config.wrap);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">72</strong>        } else {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">73</strong>            return encodeHTML(codeLine);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">74</strong>        }</pre></div>

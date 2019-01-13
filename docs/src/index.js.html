@@ -17,62 +17,88 @@
             </div>
             <pre></pre>
         </div>
-        <div class="line"><div class="doc"><p>This file is the entry point for the command-line utility, and is focused on handling processing CLI arguments and figuring out the right options to pass to the docs generator.</p>
-</div><pre class="source javascript"><strong class="lineNumber">4</strong></pre></div>
+        <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">1</strong>#!/usr/bin/env node</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">2</strong></pre></div>
+<div class="line"><div class="doc"><p>This file is the entry point for the command-line utility, and is focused on handling processing CLI arguments and figuring out the right options to pass to the docs generator.</p>
+</div><pre class="source javascript"><strong class="lineNumber">6</strong></pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber"></strong></pre></div>
 <div class="line"><div class="doc"><p>We use <code>minimist</code> to parse command line arguments (<code>process.argv</code>)</p>
-</div><pre class="source javascript"><strong class="lineNumber">6</strong>const path = require('path');</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">7</strong>const minimist = require('minimist');</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">8</strong>const glob = require('glob');</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">9</strong>const DEFAULTS = require('./defaults.js');</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">10</strong>const { generateLitteratePages } = require('./generate.js');</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">11</strong></pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">8</strong>const path = require('path');</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">9</strong>const minimist = require('minimist');</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">10</strong>const glob = require('glob');</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">11</strong>const DEFAULTS = require('./defaults.js');</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">12</strong>const { generateLitteratePages } = require('./generate.js');</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">13</strong></pre></div>
 <div class="line"><div class="doc"><p>Read + parse command line arguments into a dictionary (object)</p>
-</div><pre class="source javascript"><strong class="lineNumber">13</strong>const ARGS = minimist(process.argv.slice(2));</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">14</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">15</strong>const userConfigPath = ARGS['config'] || '../litterate.config.js';</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">16</strong>const USER_CONFIG = require(userConfigPath);</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">17</strong>const CONFIG = Object.assign(</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">18</strong>    {},</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">19</strong>    DEFAULTS,</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">20</strong>    USER_CONFIG</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">21</strong>);</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">22</strong></pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">15</strong>const ARGS = minimist(process.argv.slice(2));</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">16</strong></pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">17</strong>const userConfigPath = ARGS['config'];</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">18</strong>const USER_CONFIG = userConfigPath ? require(userConfigPath) : {};</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">19</strong>const CONFIG = Object.assign(</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">20</strong>    {},</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">21</strong>    DEFAULTS,</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">22</strong>    USER_CONFIG</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">23</strong>);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">24</strong></pre></div>
 <div class="line"><div class="doc"><p>Reconcile <code>ARGS</code> and <code>CONFIG</code> together; <code>ARGS</code> overrides any <code>CONFIG</code> file option.</p>
-</div><pre class="source javascript"><strong class="lineNumber">25</strong>for (const [optionName, optionValue] of Object.entries(ARGS)) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">26</strong>    switch (optionName) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">27</strong>        case '_':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">28</strong>            if (optionValue.length &#62; 0) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">29</strong>                CONFIG.files = optionValue;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">30</strong>            }</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">31</strong>            break;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">32</strong>        case 'o':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">33</strong>        case 'output':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">34</strong>            CONFIG.output = optionValue;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">35</strong>            break;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">36</strong>        default:</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">37</strong>            throw new Error(`${optionName} is not a valid option, but was set to ${optionValue}`);</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">38</strong>    }</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">39</strong>}</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">40</strong></pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">27</strong>for (const [optionName, optionValue] of Object.entries(ARGS)) {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">28</strong>    switch (optionName) {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">29</strong>        case '_':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">30</strong>            if (optionValue.length &#62; 0) {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">31</strong>                CONFIG.files = optionValue;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">32</strong>            }</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">33</strong>            break;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">34</strong>        case 'n':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">35</strong>        case 'name':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">36</strong>            CONFIG.name = optionValue;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">37</strong>            break;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">38</strong>        case 'd':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">39</strong>        case 'description':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">40</strong>            CONFIG.description = optionValue;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">41</strong>            break;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">42</strong>        case 'w':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">43</strong>        case 'wrap':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">44</strong>            CONFIG.wrap = parseInt(optionValue);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">45</strong>            break;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">46</strong>        case 'b':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">47</strong>        case 'baseURL':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">48</strong>            CONFIG.baseURL = optionValue;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">49</strong>            break;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">50</strong>        case 'v':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">51</strong>        case 'verbose':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">52</strong>            CONFIG.verbose = optionValue;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">53</strong>            break;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">54</strong>        case 'o':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">55</strong>        case 'output':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">56</strong>            CONFIG.outputDirectory = optionValue;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">57</strong>            break;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">58</strong>        default:</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">59</strong>            throw new Error(`${optionName} is not a valid option, but was set to ${optionValue}`);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">60</strong>    }</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">61</strong>}</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">62</strong></pre></div>
 <div class="line"><div class="doc"><p>File names are given as glob patterns, which we should expand out.</p>
-</div><pre class="source javascript"><strong class="lineNumber">42</strong>let sourceFiles = [];</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">43</strong>for (const globPattern of CONFIG.files) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">44</strong>    try {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">45</strong>        const files = glob.sync(globPattern, {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">46</strong>            nodir: true,</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">47</strong>            ignore: ['**/node_modules/'],</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">48</strong>        });</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">49</strong>        sourceFiles = sourceFiles.concat(files);</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">50</strong>    } catch (err) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">51</strong>        console.log(`Error encountered while looking for matching source files: ${err}`);</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">52</strong>    }</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">53</strong>}</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">54</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">55</strong>CONFIG.baseURL = path.join(CONFIG.baseURL, '/');</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">56</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">57</strong>generateLitteratePages(sourceFiles, CONFIG);</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">58</strong></pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">64</strong>let sourceFiles = [];</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">65</strong>for (const globPattern of CONFIG.files) {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">66</strong>    try {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">67</strong>        const files = glob.sync(globPattern, {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">68</strong>            nodir: true,</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">69</strong>            ignore: ['**/node_modules/'],</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">70</strong>        });</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">71</strong>        sourceFiles = sourceFiles.concat(files);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">72</strong>    } catch (err) {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">73</strong>        console.log(`Error encountered while looking for matching source files: ${err}`);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">74</strong>    }</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">75</strong>}</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">76</strong></pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">77</strong>CONFIG.baseURL = path.join(CONFIG.baseURL, '/');</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">78</strong></pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">79</strong>if (CONFIG.verbose) {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">80</strong>    console.log('Using configuration: ', CONFIG);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">81</strong>}</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">82</strong></pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">83</strong>generateLitteratePages(sourceFiles, CONFIG);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">84</strong></pre></div>
     </main>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github-gist.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>

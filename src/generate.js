@@ -55,8 +55,8 @@ const populateIndexPage = (sourceFiles, config) => {
         return `<p class="sourceLink"><a href="${config.baseURL}${path.relative(config.outputDirectory, outputPath)}">${sourcePath}</a></p>`;
     });
     return resolveTemplate(INDEX_PAGE, {
-        title: config.projectName,
-        description: renderMarkdown(config.projectDescription),
+        title: config.name,
+        description: renderMarkdown(config.description),
         sourcesList: files.join('\n'),
         baseURL: config.baseURL,
     });
@@ -67,8 +67,8 @@ const linesToLinePairs = (lines, config) => {
     let docLine = '';
 
     const processCodeLine = codeLine => {
-        if (config.wrapLimit !== 0) {
-            return wrapLine(encodeHTML(codeLine), config.wrapLimit);
+        if (config.wrap !== 0) {
+            return wrapLine(encodeHTML(codeLine), config.wrap);
         } else {
             return encodeHTML(codeLine);
         }

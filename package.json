@@ -7,9 +7,8 @@
   "author": "Linus Lee <linus@thesephist.com>",
   "license": "MIT",
   "scripts": {
-    "docs": "node ./src/index.js",
-    "test": "mocha test/",
-    "deploy:docs": "node ./src/index.js && surge -p ./docs/ --domain litterate.surge.sh"
+    "docs": "./src/index.js",
+    "test": "mocha test/"
   },
   "bin": {
     "litterate": "./src/index.js"

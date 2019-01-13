@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "docs": "node ./src/index.js",
-    "test": "mocha test/"
+    "test": "mocha test/",
+    "deploy:docs": "node ./src/index.js && surge -p ./docs/ --domain litterate.surge.sh"
   },
   "bin": {
     "litterate": "./src/index.js"

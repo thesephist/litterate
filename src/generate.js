@@ -45,14 +45,14 @@ const resolveTemplate = (templateContent, templateValues) => {
 const getOutputPathForSourcePath = (sourcePath, config) => {
     return path.join(
         config.outputDirectory,
-        path.parse(sourcePath).base + '.html'
+        sourcePath + '.html'
     );
 }
 
 const populateIndexPage = (sourceFiles, config) => {
     const files = sourceFiles.map(sourcePath => {
         const outputPath = getOutputPathForSourcePath(sourcePath, config);
-        return `<p><a href="${path.relative(config.outputDirectory, outputPath)}">${sourcePath}</a></p>`;
+        return `<p class="sourceLink"><a href="${path.relative(config.outputDirectory, outputPath)}">${sourcePath}</a></p>`;
     });
     return resolveTemplate(INDEX_PAGE, {
         title: config.projectName,
@@ -146,16 +146,20 @@ const generateLitteratePages = async (sourceFiles, config) => {
         outputDirectory,
     } = config;
 
-    fs.writeFile(
-        path.resolve(outputDirectory, 'index.html'),
-        populateIndexPage(sourceFiles, config),
-        'utf8', err => {
-            if (err) console.error(`Error encountered while writing index.html to disk: ${err}`);
-        }
-    );
+    mkdirp(outputDirectory, err => {
+        if (err) console.error(`Unable to create ${outputDirectory} for documentation`);
 
-    fs.writeFile(path.resolve(outputDirectory, 'main.css'), STYLES_CSS, 'utf8', err => {
-        if (err) console.error(`Error encountered while writing main.css to disk: ${err}`);
+        fs.writeFile(
+            path.resolve(outputDirectory, 'index.html'),
+            populateIndexPage(sourceFiles, config),
+            'utf8', err => {
+                if (err) console.error(`Error encountered while writing index.html to disk: ${err}`);
+            }
+        );
+
+        fs.writeFile(path.resolve(outputDirectory, 'main.css'), STYLES_CSS, 'utf8', err => {
+            if (err) console.error(`Error encountered while writing main.css to disk: ${err}`);
+        });
     });
 
     for (const sourceFile of sourceFiles) {

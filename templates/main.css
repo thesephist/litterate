@@ -112,3 +112,6 @@ p a {
 a:hover {
     opacity: 1;
 }
+.doc .sourceLink {
+    margin-top: 8px;
+}

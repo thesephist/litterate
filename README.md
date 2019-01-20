@@ -23,6 +23,20 @@ By default, Litterate will count comment blocks starting with `//>` on a newline
 
 You can customize Litterate's output with command line arguments (run `litterate --help` to see options), or with a configuration file, which you can pass to `litterate` with the `--config` command line option.
 
+### Usage with npm scripts
+
+Generally, you'll want to have a configuration you use for your project, and a simple way to run Litterate. For this, one option is to have an npm script that runs Litterate with a configuration file in your project. For example, we may have an npm script:
+
+```js
+    ...
+    "scripts": {
+        "docs": "litterate --config litterate.config.js",
+    },
+    ...
+```
+
+With this script, running `npm run docs` or  `yarn docs` will run Litterate from your NPM dependencies, with the config file you specified. If you use Litterate this way, there's no need to install Litterate globally; just make sure Litterate is installed for your project as a dependency or devDependency.
+
 ## Configuration options
 
 Save your configuration in a file, say `litterate.config.js`, and call Litterate with the config with `litterate --config litterate.config.js`. An example configuration file (the one Litterate uses for itself) is in the repo, at `./litterate.config.js`.

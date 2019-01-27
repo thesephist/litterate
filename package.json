@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "docs": "./src/index.js --config ./litterate.config.js",
-    "test": "mocha test/"
+    "test": "mocha test/",
+    "lint": "eslint ./src/*.js ./litterate.config.js"
   },
   "bin": {
     "litterate": "./src/index.js"
@@ -21,6 +22,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "eslint": "^5.12.1",
     "mocha": "^5.2.0"
   }
 }

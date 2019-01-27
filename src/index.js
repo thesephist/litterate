@@ -9,7 +9,7 @@ const path = require('path');
 const minimist = require('minimist');
 const glob = require('glob');
 const DEFAULTS = require('./defaults.js');
-const { generateLitteratePages } = require('./generate.js');
+const {generateLitteratePages} = require('./generate.js');
 
 //> Read + parse command line arguments into a dictionary (object)
 const ARGS = minimist(process.argv.slice(2));
@@ -53,10 +53,13 @@ if (ARGS.help || ARGS.h) {
                 By default, litterate writes to ./docs/.
 `;
     console.log(helpMessage);
-    process.exit();
+    //> It's OK to `process.exit()` here because it'll always be
+    //  the top-level execution layer of the app, as the entry point to the CLI.
+    /* eslint-disable-next-line no-process-exit */
+    process.exit(0);
 }
 
-const userConfigPath = ARGS['config'];
+const userConfigPath = ARGS.config;
 const USER_CONFIG = userConfigPath ? require(path.resolve(process.cwd(), userConfigPath)) : {};
 //> This is an easy way to merge two configuration options, with `USER_CONFIG` overriding anything
 //  specified in defaults.
@@ -88,7 +91,7 @@ for (const [optionName, optionValue] of Object.entries(ARGS)) {
             break;
         case 'w':
         case 'wrap':
-            CONFIG.wrap = parseInt(optionValue);
+            CONFIG.wrap = parseInt(optionValue, 10);
             break;
         case 'b':
         case 'baseURL':
@@ -118,7 +121,7 @@ for (const globPattern of CONFIG.files) {
             nodir: true,
             //> Ignore node modules in matches
             ignore: [
-                '**/node_modules/'
+                '**/node_modules/',
             ],
         });
         sourceFiles = sourceFiles.concat(files);

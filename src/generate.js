@@ -28,7 +28,7 @@ const wrapLine = (line, limit) => {
 //> Helper function to scape characters that won't display in HTML correctly, like the very common
 //  `>` and `<` and `&` characters in code.
 const encodeHTML = code => {
-    return code.replace(/[\u00A0-\u9999<>\&]/gim, i => {
+    return code.replace(/[\u00A0-\u9999<>&]/gim, i => {
         return '&#' + i.codePointAt(0) + ';';
     });
 }
@@ -135,7 +135,9 @@ const linesToLinePairs = (lines, config) => {
                 pushPair(line, idx + 1);
             }
         } else {
-            if (inAnnotationComment) inAnnotationComment = false;
+            if (inAnnotationComment) {
+                inAnnotationComment = false;
+            }
             pushPair(line, idx + 1);
         }
     });
@@ -146,13 +148,17 @@ const linesToLinePairs = (lines, config) => {
 //> This function is called for each source file, to process and save
 //  the Litterate version of the source file in the correct place.
 const createAndSavePage = (sourcePath, config) => {
-    const logErr = (err) => {
-        if (err) console.error(`Error writing ${sourcePath} annotated page: ${err}`);
+    const logErr = err => {
+        if (err) {
+            console.error(`Error writing ${sourcePath} annotated page: ${err}`);
+        }
     }
 
-    return new Promise((res, rej) => {
+    return new Promise((res, _rej) => {
         fs.readFile(sourcePath, 'utf8', (err, content) => {
-            if (err) logErr();
+            if (err) {
+                logErr();
+            }
 
             const sourceLines = linesToLinePairs(content.split('\n'), config).map(([doc, source, lineNumber]) => {
                 return `<div class="line"><div class="doc">${doc}</div><pre class="source javascript"><strong class="lineNumber">${lineNumber}</strong>${source}</pre></div>`;
@@ -164,12 +170,15 @@ const createAndSavePage = (sourcePath, config) => {
                 baseURL: config.baseURL,
             });
             const outputFilePath = getOutputPathForSourcePath(sourcePath, config);
-            mkdirp(path.parse(outputFilePath).dir, (err) => {
-                if (err) logErr();
+            mkdirp(path.parse(outputFilePath).dir, err => {
+                if (err) {
+                    logErr();
+                }
 
                 fs.writeFile(outputFilePath, annotatedPage, 'utf8', err => {
-                    if (err) logErr();
-
+                    if (err) {
+                        logErr();
+                    }
                     res();
                 });
             });
@@ -179,25 +188,31 @@ const createAndSavePage = (sourcePath, config) => {
 
 //> This whole file exports this single function, which is called with a list of files
 //  to process, and the configuration options.
-const generateLitteratePages = async (sourceFiles, config) => {
+const generateLitteratePages = (sourceFiles, config) => {
     const {
         outputDirectory,
     } = config;
 
     //> Write out index and main.css files
     mkdirp(outputDirectory, err => {
-        if (err) console.error(`Unable to create ${outputDirectory} for documentation`);
+        if (err) {
+            console.error(`Unable to create ${outputDirectory} for documentation`);
+        }
 
         fs.writeFile(
             path.resolve(outputDirectory, 'index.html'),
             populateIndexPage(sourceFiles, config),
             'utf8', err => {
-                if (err) console.error(`Error encountered while writing index.html to disk: ${err}`);
+                if (err) {
+                    console.error(`Error encountered while writing index.html to disk: ${err}`);
+                }
             }
         );
 
         fs.writeFile(path.resolve(outputDirectory, 'main.css'), STYLES_CSS, 'utf8', err => {
-            if (err) console.error(`Error encountered while writing main.css to disk: ${err}`);
+            if (err) {
+                console.error(`Error encountered while writing main.css to disk: ${err}`);
+            }
         });
     });
 

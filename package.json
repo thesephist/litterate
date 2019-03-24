@@ -1,6 +1,6 @@
 {
   "name": "litterate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Generate beautiful literate programming-style description of your code from comment annotations",
   "main": "src/index.js",
   "repository": "git@github.com:thesephist/litterate.git",

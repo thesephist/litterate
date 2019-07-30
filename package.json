@@ -16,13 +16,13 @@
   },
   "dependencies": {
     "glob": "^7.1.4",
-    "marked": "^0.6.2",
+    "marked": "^0.7.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "eslint": "^5.16.0",
-    "mocha": "^6.1.4"
+    "eslint": "^6.1.0",
+    "mocha": "^6.2.0"
   }
 }

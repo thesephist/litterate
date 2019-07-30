@@ -33,14 +33,6 @@ const encodeHTML = code => {
     });
 }
 
-//> Marked allows us to provide a custom HTML sanitizer, which we use to encode HTML
-//  entities correctly.
-const markedOptions = {
-    sanitize: true,
-    sanitizer: encodeHTML,
-}
-const renderMarkdown = str => marked(str, markedOptions);
-
 //> Litterate uses a very, very minimal templating system that just wraps keywords
 //  in `{{curlyBraces}}`. We don't need anything complicated, and this allows us to be
 //  lightweight and customizable when needed. This function populates a template with
@@ -73,7 +65,7 @@ const populateIndexPage = (sourceFiles, config) => {
     });
     return resolveTemplate(INDEX_PAGE, {
         title: config.name,
-        description: renderMarkdown(config.description),
+        description: marked(config.description),
         sourcesList: files.join('\n'),
         baseURL: config.baseURL,
     });
@@ -106,7 +98,7 @@ const linesToLinePairs = (lines, config) => {
             if (lastLine && lastLine[0]) {
                 linePairs.push(['', '', '']);
             }
-            linePairs.push([renderMarkdown(docLine), processCodeLine(codeLine), lineNumber]);
+            linePairs.push([marked(docLine), processCodeLine(codeLine), lineNumber]);
         } else {
             linePairs.push(['', processCodeLine(codeLine), lineNumber]);
         }

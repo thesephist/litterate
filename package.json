@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "glob": "^7.1.4",
-    "marked": "^0.7.0",
+    "marked": "^4.0.10",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1"
   },

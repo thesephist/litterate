@@ -65,7 +65,7 @@ const populateIndexPage = (sourceFiles, config) => {
     });
     return resolveTemplate(INDEX_PAGE, {
         title: config.name,
-        description: marked(config.description),
+        description: marked.parse(config.description),
         sourcesList: files.join('\n'),
         baseURL: config.baseURL,
     });
@@ -98,7 +98,7 @@ const linesToLinePairs = (lines, config) => {
             if (lastLine && lastLine[0]) {
                 linePairs.push(['', '', '']);
             }
-            linePairs.push([marked(docLine), processCodeLine(codeLine), lineNumber]);
+            linePairs.push([marked.parse(docLine), processCodeLine(codeLine), lineNumber]);
         } else {
             linePairs.push(['', processCodeLine(codeLine), lineNumber]);
         }

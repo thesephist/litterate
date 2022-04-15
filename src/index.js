@@ -66,7 +66,7 @@ const USER_CONFIG = userConfigPath ? require(path.resolve(process.cwd(), userCon
 const CONFIG = Object.assign(
     {},
     DEFAULTS,
-    USER_CONFIG
+    USER_CONFIG,
 );
 
 //> Reconcile `ARGS`, the command-line arguments, and `CONFIG` together; `ARGS` overrides

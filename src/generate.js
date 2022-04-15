@@ -41,7 +41,7 @@ const resolveTemplate = (templateContent, templateValues) => {
     for (const [key, value] of Object.entries(templateValues)) {
         templateContent = templateContent.replace(
             new RegExp(`{{${key}}}`, 'g'),
-            value
+            value,
         );
     }
     return templateContent;
@@ -52,7 +52,7 @@ const resolveTemplate = (templateContent, templateValues) => {
 const getOutputPathForSourcePath = (sourcePath, config) => {
     return path.join(
         config.outputDirectory,
-        sourcePath + '.html'
+        sourcePath + '.html',
     );
 }
 
@@ -162,7 +162,7 @@ const createAndSavePage = (sourcePath, config) => {
                 baseURL: config.baseURL,
             });
             const outputFilePath = getOutputPathForSourcePath(sourcePath, config);
-            mkdirp(path.parse(outputFilePath).dir, err => {
+            mkdirp(path.parse(outputFilePath).dir, {}, err => {
                 if (err) {
                     logErr();
                 }
@@ -186,7 +186,7 @@ const generateLitteratePages = (sourceFiles, config) => {
     } = config;
 
     //> Write out index and main.css files
-    mkdirp(outputDirectory, err => {
+    mkdirp(outputDirectory, {}, err => {
         if (err) {
             console.error(`Unable to create ${outputDirectory} for documentation`);
         }
@@ -198,7 +198,7 @@ const generateLitteratePages = (sourceFiles, config) => {
                 if (err) {
                     console.error(`Error encountered while writing index.html to disk: ${err}`);
                 }
-            }
+            },
         );
 
         fs.writeFile(path.resolve(outputDirectory, 'main.css'), STYLES_CSS, 'utf8', err => {

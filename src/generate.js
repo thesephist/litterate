@@ -4,7 +4,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const mkdirp = require('mkdirp');
 //> Marked is our markdown parser
 const marked = require('marked');
 
@@ -162,7 +161,7 @@ const createAndSavePage = (sourcePath, config) => {
                 baseURL: config.baseURL,
             });
             const outputFilePath = getOutputPathForSourcePath(sourcePath, config);
-            mkdirp(path.parse(outputFilePath).dir, {}, err => {
+            fs.mkdir(path.parse(outputFilePath).dir, {recursive: true}, err => {
                 if (err) {
                     logErr();
                 }
@@ -186,7 +185,7 @@ const generateLitteratePages = (sourceFiles, config) => {
     } = config;
 
     //> Write out index and main.css files
-    mkdirp(outputDirectory, {}, err => {
+    fs.mkdir(outputDirectory, {recursive: true}, err => {
         if (err) {
             console.error(`Unable to create ${outputDirectory} for documentation`);
         }

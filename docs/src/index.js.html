@@ -17,143 +17,143 @@
             </div>
             <pre></pre>
         </div>
-        <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">1</strong>#!/u&#115;r/bin/env node</pre></div>
+        <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">1</strong>#!/usr/bin/env node</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">2</strong></pre></div>
 <div class="line"><div class="doc"><p>This file is the entry point for the command-line utility, and is focused on handling and processing CLI arguments and figuring out the right options to pass to the docs generator.</p>
 </div><pre class="source javascript"><strong class="lineNumber">6</strong></pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber"></strong></pre></div>
 <div class="line"><div class="doc"><p>We use <code>minimist</code> to parse command line arguments (<code>process.argv</code>)</p>
-</div><pre class="source javascript"><strong class="lineNumber">8</strong>con&#115;t path = require('path');</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">9</strong>con&#115;t minimi&#115;t = require('minimi&#115;t');</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">10</strong>con&#115;t glob = require('glob');</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">11</strong>con&#115;t DEFAULT&#83; = require('./default&#115;.j&#115;');</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">12</strong>con&#115;t {generateLitteratePage&#115;} = require('./generate.j&#115;');</pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">8</strong>const path = require('path');</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">9</strong>const minimist = require('minimist');</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">10</strong>const glob = require('glob');</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">11</strong>const DEFAULTS = require('./defaults.js');</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">12</strong>const {generateLitteratePages} = require('./generate.js');</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">13</strong></pre></div>
 <div class="line"><div class="doc"><p>Read + parse command line arguments into a dictionary (object)</p>
-</div><pre class="source javascript"><strong class="lineNumber">15</strong>con&#115;t ARG&#83; = minimi&#115;t(proce&#115;&#115;.argv.&#115;lice(2));</pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">15</strong>const ARGS = minimist(process.argv.slice(2));</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">16</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">17</strong>if (ARG&#83;.help || ARG&#83;.h) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">18</strong>    con&#115;t helpMe&#115;&#115;age = `</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">19</strong>    litterate - generate beautiful literate programming-&#115;tyle code annotation&#115;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">20</strong>    Read the full documentation at http&#115;://github.com/the&#115;ephi&#115;t/litterate</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">17</strong>if (ARGS.help || ARGS.h) {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">18</strong>    const helpMessage = `</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">19</strong>    litterate - generate beautiful literate programming-style code annotations</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">20</strong>    Read the full documentation at https://github.com/thesephist/litterate</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">21</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">22</strong>    Ba&#115;ic u&#115;age</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">22</strong>    Basic usage</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">23</strong>    ---</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">24</strong>    litterate --config your-litterate-config.j&#115;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">25</strong>    litterate [option&#115;] [file&#115;]</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">26</strong>        (if no file&#115; are &#115;pecified, litterate run&#115; on &#115;rc/**/*.j&#115;)</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">24</strong>    litterate --config your-litterate-config.js</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">25</strong>    litterate [options] [files]</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">26</strong>        (if no files are specified, litterate runs on src/**/*.js)</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">27</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">28</strong>    Command-line option&#115;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">29</strong>        (the&#115;e can be cu&#115;tomized in a configuration file a&#115; well)</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">28</strong>    Command-line options</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">29</strong>        (these can be customized in a configuration file as well)</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">30</strong>    ---</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">31</strong>    --config    &#83;pecify a J&#83; or J&#83;ON file for configuration</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">31</strong>    --config    Specify a JS or JSON file for configuration</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">32</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">33</strong>    -n, --name  Name of your project, &#115;hown in the generated &#115;ite.</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">33</strong>    -n, --name  Name of your project, shown in the generated site.</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">34</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">35</strong>    -d, --de&#115;cription</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">36</strong>                De&#115;cription text for your project, &#115;hown in the generated &#115;ite.</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">35</strong>    -d, --description</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">36</strong>                Description text for your project, shown in the generated site.</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">37</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">38</strong>    -w, --wrap  If 0, long line&#115; of &#115;ource code will never be wrapped.</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">39</strong>                If any other number, litterate will wrap long line&#115; to the given</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">40</strong>                number of character&#115; per line.</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">38</strong>    -w, --wrap  If 0, long lines of source code will never be wrapped.</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">39</strong>                If any other number, litterate will wrap long lines to the given</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">40</strong>                number of characters per line.</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">41</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">42</strong>    -b, --ba&#115;eURL</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">43</strong>                By default, the generated web&#115;ite a&#115;&#115;ume&#115; the root URL of the &#115;ite</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">44</strong>                i&#115; '/', but for GitHub Page&#115; and other &#115;ite&#115;, you may want to &#115;et</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">45</strong>                a different ba&#115;e URL for the &#115;ite. Thi&#115; allow&#115; you to &#115;et a different</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">46</strong>                &#115;ite ba&#115;e URL.</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">42</strong>    -b, --baseURL</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">43</strong>                By default, the generated website assumes the root URL of the site</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">44</strong>                is '/', but for GitHub Pages and other sites, you may want to set</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">45</strong>                a different base URL for the site. This allows you to set a different</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">46</strong>                site base URL.</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">47</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">48</strong>    -v, --verbo&#115;e</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">49</strong>                Verbo&#115;e output while litterate run&#115;, u&#115;eful for debugging.</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">48</strong>    -v, --verbose</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">49</strong>                Verbose output while litterate runs, useful for debugging.</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">50</strong></pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">51</strong>    -o, --output</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">52</strong>                &#83;pecify a different de&#115;tination directory for the generated doc&#115; &#115;ite.</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">53</strong>                By default, litterate write&#115; to ./doc&#115;/.</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">52</strong>                Specify a different destination directory for the generated docs site.</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">53</strong>                By default, litterate writes to ./docs/.</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">54</strong>`;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">55</strong>    con&#115;ole.log(helpMe&#115;&#115;age);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">55</strong>    console.log(helpMessage);</pre></div>
 <div class="line"><div class="doc"><p>It&#39;s OK to <code>process.exit()</code> here because it&#39;ll always be the top-level execution layer of the app, as the entry point to the CLI.</p>
-</div><pre class="source javascript"><strong class="lineNumber">58</strong>    /* e&#115;lint-di&#115;able-next-line no-proce&#115;&#115;-exit */</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">59</strong>    proce&#115;&#115;.exit(0);</pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">58</strong>    /* eslint-disable-next-line no-process-exit */</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">59</strong>    process.exit(0);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">60</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">61</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">62</strong>con&#115;t u&#115;erConfigPath = ARG&#83;.config;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">63</strong>con&#115;t U&#83;ER_CONFIG = u&#115;erConfigPath ? require(path.re&#115;olve(proce&#115;&#115;.cwd(), u&#115;erConfigPath)) : {};</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">62</strong>const userConfigPath = ARGS.config;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">63</strong>const USER_CONFIG = userConfigPath ? require(path.resolve(process.cwd(), userConfigPath)) : {};</pre></div>
 <div class="line"><div class="doc"><p>This is an easy way to merge two configuration options, with <code>USER_CONFIG</code> overriding anything specified in defaults.</p>
-</div><pre class="source javascript"><strong class="lineNumber">66</strong>con&#115;t CONFIG = Object.a&#115;&#115;ign(</pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">66</strong>const CONFIG = Object.assign(</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">67</strong>    {},</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">68</strong>    DEFAULT&#83;,</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">69</strong>    U&#83;ER_CONFIG</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">68</strong>    DEFAULTS,</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">69</strong>    USER_CONFIG,</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">70</strong>);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">71</strong></pre></div>
 <div class="line"><div class="doc"><p>Reconcile <code>ARGS</code>, the command-line arguments, and <code>CONFIG</code> together; <code>ARGS</code> overrides any <code>CONFIG</code> file option.</p>
-</div><pre class="source javascript"><strong class="lineNumber">74</strong>for (con&#115;t [optionName, optionValue] of Object.entrie&#115;(ARG&#83;)) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">75</strong>    &#115;witch (optionName) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">76</strong>        ca&#115;e 'config':</pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">74</strong>for (const [optionName, optionValue] of Object.entries(ARGS)) {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">75</strong>    switch (optionName) {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">76</strong>        case 'config':</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">77</strong>            // do nothing -- ignore</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">78</strong>            break;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">79</strong>        ca&#115;e '_':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">79</strong>        case '_':</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">80</strong>            if (optionValue.length &#62; 0) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">81</strong>                CONFIG.file&#115; = optionValue;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">81</strong>                CONFIG.files = optionValue;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">82</strong>            }</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">83</strong>            break;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">84</strong>        ca&#115;e 'n':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">85</strong>        ca&#115;e 'name':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">84</strong>        case 'n':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">85</strong>        case 'name':</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">86</strong>            CONFIG.name = optionValue;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">87</strong>            break;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">88</strong>        ca&#115;e 'd':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">89</strong>        ca&#115;e 'de&#115;cription':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">90</strong>            CONFIG.de&#115;cription = optionValue;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">88</strong>        case 'd':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">89</strong>        case 'description':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">90</strong>            CONFIG.description = optionValue;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">91</strong>            break;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">92</strong>        ca&#115;e 'w':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">93</strong>        ca&#115;e 'wrap':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">94</strong>            CONFIG.wrap = par&#115;eInt(optionValue, 10);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">92</strong>        case 'w':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">93</strong>        case 'wrap':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">94</strong>            CONFIG.wrap = parseInt(optionValue, 10);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">95</strong>            break;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">96</strong>        ca&#115;e 'b':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">97</strong>        ca&#115;e 'ba&#115;eURL':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">98</strong>            CONFIG.ba&#115;eURL = optionValue;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">96</strong>        case 'b':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">97</strong>        case 'baseURL':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">98</strong>            CONFIG.baseURL = optionValue;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">99</strong>            break;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">100</strong>        ca&#115;e 'v':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">101</strong>        ca&#115;e 'verbo&#115;e':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">102</strong>            CONFIG.verbo&#115;e = optionValue;</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">100</strong>        case 'v':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">101</strong>        case 'verbose':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">102</strong>            CONFIG.verbose = optionValue;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">103</strong>            break;</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">104</strong>        ca&#115;e 'o':</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">105</strong>        ca&#115;e 'output':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">104</strong>        case 'o':</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">105</strong>        case 'output':</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">106</strong>            CONFIG.outputDirectory = optionValue;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">107</strong>            break;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">108</strong>        default:</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">109</strong>            throw new Error(`${optionName} i&#115; not a valid option, but wa&#115; &#115;et to ${optionValue}`);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">109</strong>            throw new Error(`${optionName} is not a valid option, but was set to ${optionValue}`);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">110</strong>    }</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">111</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">112</strong></pre></div>
 <div class="line"><div class="doc"><p>File names are given as glob patterns, which we should expand out.</p>
-</div><pre class="source javascript"><strong class="lineNumber">114</strong>let &#115;ourceFile&#115; = [];</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">115</strong>for (con&#115;t globPattern of CONFIG.file&#115;) {</pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">114</strong>let sourceFiles = [];</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">115</strong>for (const globPattern of CONFIG.files) {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">116</strong>    try {</pre></div>
 <div class="line"><div class="doc"><p>Calling the synchronous API here is find, since this is a CLI with one event in the loop, but it may be faster to switch to the async version later.</p>
-</div><pre class="source javascript"><strong class="lineNumber">119</strong>        con&#115;t file&#115; = glob.&#115;ync(globPattern, {</pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">119</strong>        const files = glob.sync(globPattern, {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber"></strong></pre></div>
 <div class="line"><div class="doc"><p>This option excludes any directories from the returned match, which we want.</p>
 </div><pre class="source javascript"><strong class="lineNumber">121</strong>            nodir: true,</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber"></strong></pre></div>
 <div class="line"><div class="doc"><p>Ignore node modules in matches</p>
 </div><pre class="source javascript"><strong class="lineNumber">123</strong>            ignore: [</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">124</strong>                '**/node_module&#115;/',</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">124</strong>                '**/node_modules/',</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">125</strong>            ],</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">126</strong>        });</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">127</strong>        &#115;ourceFile&#115; = &#115;ourceFile&#115;.concat(file&#115;);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">127</strong>        sourceFiles = sourceFiles.concat(files);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">128</strong>    } catch (err) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">129</strong>        con&#115;ole.log(`Error encountered while looking for matching &#115;ource file&#115;: ${err}`);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">129</strong>        console.log(`Error encountered while looking for matching source files: ${err}`);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">130</strong>    }</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">131</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">132</strong></pre></div>
 <div class="line"><div class="doc"><p>Ensure that the base URL ends with a <code>/</code></p>
-</div><pre class="source javascript"><strong class="lineNumber">134</strong>CONFIG.ba&#115;eURL = path.join(CONFIG.ba&#115;eURL, '/');</pre></div>
+</div><pre class="source javascript"><strong class="lineNumber">134</strong>CONFIG.baseURL = path.join(CONFIG.baseURL, '/');</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">135</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">136</strong>if (CONFIG.verbo&#115;e) {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">137</strong>    con&#115;ole.log('U&#115;ing configuration: ', CONFIG);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">136</strong>if (CONFIG.verbose) {</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">137</strong>    console.log('Using configuration: ', CONFIG);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">138</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">139</strong></pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">140</strong>generateLitteratePage&#115;(&#115;ourceFile&#115;, CONFIG);</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">140</strong>generateLitteratePages(sourceFiles, CONFIG);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">141</strong></pre></div>
     </main>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/github-gist.min.css">

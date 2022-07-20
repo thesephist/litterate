@@ -9,7 +9,8 @@
   "scripts": {
     "docs": "./src/index.js --config ./litterate.config.js",
     "test": "mocha test/",
-    "lint": "eslint ./src/*.js ./litterate.config.js"
+    "lint": "eslint ./src/*.js ./litterate.config.js",
+    "fmt": "eslint --fix ./src/*.js ./litterate.config.js"
   },
   "bin": {
     "litterate": "./src/index.js"

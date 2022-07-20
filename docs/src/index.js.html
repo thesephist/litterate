@@ -19,7 +19,9 @@
         </div>
         <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">1</strong>#!/usr/bin/env node</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">2</strong></pre></div>
-<div class="line"><div class="doc"><p>This file is the entry point for the command-line utility, and is focused on handling and processing CLI arguments and figuring out the right options to pass to the docs generator.</p>
+<div class="line"><div class="doc"><p>This file is the entry point for the command-line utility,
+and is focused on handling and processing CLI arguments and
+figuring out the right options to pass to the docs generator.</p>
 </div><pre class="source javascript"><strong class="lineNumber">6</strong></pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber"></strong></pre></div>
 <div class="line"><div class="doc"><p>We use <code>minimist</code> to parse command line arguments (<code>process.argv</code>)</p>
@@ -71,21 +73,24 @@
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">53</strong>                By default, litterate writes to ./docs/.</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">54</strong>`;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">55</strong>    console.log(helpMessage);</pre></div>
-<div class="line"><div class="doc"><p>It&#39;s OK to <code>process.exit()</code> here because it&#39;ll always be the top-level execution layer of the app, as the entry point to the CLI.</p>
+<div class="line"><div class="doc"><p>It&#39;s OK to <code>process.exit()</code> here because it&#39;ll always be
+the top-level execution layer of the app, as the entry point to the CLI.</p>
 </div><pre class="source javascript"><strong class="lineNumber">58</strong>    /* eslint-disable-next-line no-process-exit */</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">59</strong>    process.exit(0);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">60</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">61</strong></pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">62</strong>const userConfigPath = ARGS.config;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">63</strong>const USER_CONFIG = userConfigPath ? require(path.resolve(process.cwd(), userConfigPath)) : {};</pre></div>
-<div class="line"><div class="doc"><p>This is an easy way to merge two configuration options, with <code>USER_CONFIG</code> overriding anything specified in defaults.</p>
+<div class="line"><div class="doc"><p>This is an easy way to merge two configuration options, with <code>USER_CONFIG</code> overriding anything
+specified in defaults.</p>
 </div><pre class="source javascript"><strong class="lineNumber">66</strong>const CONFIG = Object.assign(</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">67</strong>    {},</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">68</strong>    DEFAULTS,</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">69</strong>    USER_CONFIG,</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">70</strong>);</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">71</strong></pre></div>
-<div class="line"><div class="doc"><p>Reconcile <code>ARGS</code>, the command-line arguments, and <code>CONFIG</code> together; <code>ARGS</code> overrides any <code>CONFIG</code> file option.</p>
+<div class="line"><div class="doc"><p>Reconcile <code>ARGS</code>, the command-line arguments, and <code>CONFIG</code> together; <code>ARGS</code> overrides
+any <code>CONFIG</code> file option.</p>
 </div><pre class="source javascript"><strong class="lineNumber">74</strong>for (const [optionName, optionValue] of Object.entries(ARGS)) {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">75</strong>    switch (optionName) {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">76</strong>        case 'config':</pre></div>
@@ -129,7 +134,8 @@
 </div><pre class="source javascript"><strong class="lineNumber">114</strong>let sourceFiles = [];</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">115</strong>for (const globPattern of CONFIG.files) {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">116</strong>    try {</pre></div>
-<div class="line"><div class="doc"><p>Calling the synchronous API here is find, since this is a CLI with one event in the loop, but it may be faster to switch to the async version later.</p>
+<div class="line"><div class="doc"><p>Calling the synchronous API here is find, since this is a CLI with one event
+in the loop, but it may be faster to switch to the async version later.</p>
 </div><pre class="source javascript"><strong class="lineNumber">119</strong>        const files = glob.sync(globPattern, {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber"></strong></pre></div>
 <div class="line"><div class="doc"><p>This option excludes any directories from the returned match, which we want.</p>

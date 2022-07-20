@@ -17,19 +17,23 @@
             </div>
             <pre></pre>
         </div>
-        <div class="line"><div class="doc"><p>This file contains the bulk of the logic for generating litterate pages. This file exports a function that the command-line utility calls with configurations.</p>
+        <div class="line"><div class="doc"><p>This file contains the bulk of the logic for generating
+litterate pages. This file exports a function that the
+command-line utility calls with configurations.</p>
 </div><pre class="source javascript"><strong class="lineNumber">4</strong></pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">5</strong>const fs = require('fs');</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">6</strong>const path = require('path');</pre></div>
 <div class="line"><div class="doc"><p>Marked is our markdown parser</p>
 </div><pre class="source javascript"><strong class="lineNumber">8</strong>const marked = require('marked');</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">9</strong></pre></div>
-<div class="line"><div class="doc"><p>This isn&#39;t optimal, but for now, we read the three template files into memory at the beginning, synchronously, so we can reuse them later.</p>
+<div class="line"><div class="doc"><p>This isn&#39;t optimal, but for now, we read the three template files into memory at the beginning,
+synchronously, so we can reuse them later.</p>
 </div><pre class="source javascript"><strong class="lineNumber">12</strong>const INDEX_PAGE = fs.readFileSync(path.resolve(__dirname, '../templates/index.html'), 'utf8');</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">13</strong>const STYLES_CSS = fs.readFileSync(path.resolve(__dirname, '../templates/main.css'), 'utf8');</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">14</strong>const SOURCE_PAGE = fs.readFileSync(path.resolve(__dirname, '../templates/source.html'), 'utf8');</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">15</strong></pre></div>
-<div class="line"><div class="doc"><p>Helper function to wrap a given line of text into multiple lines, with <code>limit</code> characters per line.</p>
+<div class="line"><div class="doc"><p>Helper function to wrap a given line of text into multiple lines,
+with <code>limit</code> characters per line.</p>
 </div><pre class="source javascript"><strong class="lineNumber">18</strong>const wrapLine = (line, limit) =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">19</strong>    const len = line.length;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">20</strong>    let result = '';</pre></div>
@@ -39,14 +43,18 @@
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">24</strong>    return result;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">25</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">26</strong></pre></div>
-<div class="line"><div class="doc"><p>Helper function to scape characters that won&#39;t display in HTML correctly, like the very common <code>&gt;</code> and <code>&lt;</code> and <code>&amp;</code> characters in code.</p>
+<div class="line"><div class="doc"><p>Helper function to scape characters that won&#39;t display in HTML correctly, like the very common
+<code>&gt;</code> and <code>&lt;</code> and <code>&amp;</code> characters in code.</p>
 </div><pre class="source javascript"><strong class="lineNumber">29</strong>const encodeHTML = code =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">30</strong>    return code.replace(/[\u00A0-\u9999&#60;&#62;&#38;]/gim, i =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">31</strong>        return '&#38;#' + i.codePointAt(0) + ';';</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">32</strong>    });</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">33</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">34</strong></pre></div>
-<div class="line"><div class="doc"><p>Litterate uses a very, very minimal templating system that just wraps keywords in <code>{{curlyBraces}}</code>. We don&#39;t need anything complicated, and this allows us to be lightweight and customizable when needed. This function populates a template with given key-value pairs.</p>
+<div class="line"><div class="doc"><p>Litterate uses a very, very minimal templating system that just wraps keywords
+in <code>{{curlyBraces}}</code>. We don&#39;t need anything complicated, and this allows us to be
+lightweight and customizable when needed. This function populates a template with
+given key-value pairs.</p>
 </div><pre class="source javascript"><strong class="lineNumber">39</strong>const resolveTemplate = (templateContent, templateValues) =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">40</strong>    for (const [key, value] of Object.entries(templateValues)) {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">41</strong>        templateContent = templateContent.replace(</pre></div>
@@ -57,7 +65,8 @@
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">46</strong>    return templateContent;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">47</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">48</strong></pre></div>
-<div class="line"><div class="doc"><p>Function that maps a given source file to the path where its annotated version will be saved.</p>
+<div class="line"><div class="doc"><p>Function that maps a given source file to the path where its annotated version
+will be saved.</p>
 </div><pre class="source javascript"><strong class="lineNumber">51</strong>const getOutputPathForSourcePath = (sourcePath, config) =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">52</strong>    return path.join(</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">53</strong>        config.outputDirectory,</pre></div>
@@ -65,7 +74,8 @@
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">55</strong>    );</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">56</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">57</strong></pre></div>
-<div class="line"><div class="doc"><p>Function to populate the <code>index.html</code> page of the generated site with all the source links, name/description, etc.</p>
+<div class="line"><div class="doc"><p>Function to populate the <code>index.html</code> page of the generated site with all the source
+links, name/description, etc.</p>
 </div><pre class="source javascript"><strong class="lineNumber">60</strong>const populateIndexPage = (sourceFiles, config) =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">61</strong>    const files = sourceFiles.map(sourcePath =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">62</strong>        const outputPath = getOutputPathForSourcePath(sourcePath, config);</pre></div>
@@ -79,12 +89,14 @@
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">70</strong>    });</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">71</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">72</strong></pre></div>
-<div class="line"><div class="doc"><p>Given an array of source code lines, return an array of lines matched with any corresponding annotations and the line number from the source file.</p>
+<div class="line"><div class="doc"><p>Given an array of source code lines, return an array of lines matched with
+any corresponding annotations and the line number from the source file.</p>
 </div><pre class="source javascript"><strong class="lineNumber">75</strong>const linesToLinePairs = (lines, config) =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">76</strong>    const linePairs = [];</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">77</strong>    let docLine = '';</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">78</strong></pre></div>
-<div class="line"><div class="doc"><p>Shorthand function to markdown-process and optionally wrap source code lines.</p>
+<div class="line"><div class="doc"><p>Shorthand function to markdown-process and optionally wrap
+source code lines.</p>
 </div><pre class="source javascript"><strong class="lineNumber">81</strong>    const processCodeLine = codeLine =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">82</strong>        if (config.wrap !== 0) {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">83</strong>            return wrapLine(encodeHTML(codeLine), config.wrap);</pre></div>
@@ -93,7 +105,10 @@
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">86</strong>        }</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">87</strong>    }</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">88</strong></pre></div>
-<div class="line"><div class="doc"><p><code>linesToLinePairs</code> works by having two arrays -- one of the annotation-lineNumber-source line tuples in order, and another of the annotation lines counted so far for the next source line. This takes the annotation, line number, and source line from the second array and pushes it onto the first array, so we can move onto the next lines.</p>
+<div class="line"><div class="doc"><p><code>linesToLinePairs</code> works by having two arrays -- one of the annotation-lineNumber-source line
+tuples in order, and another of the annotation lines counted so far for the next source line.
+This takes the annotation, line number, and source line from the second array and pushes it
+onto the first array, so we can move onto the next lines.</p>
 </div><pre class="source javascript"><strong class="lineNumber">93</strong>    let inAnnotationComment = false;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">94</strong>    const pushPair = (codeLine, lineNumber) =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">95</strong>        if (docLine) {</pre></div>
@@ -108,12 +123,13 @@
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">104</strong>        docLine = '';</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">105</strong>    }</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">106</strong></pre></div>
-<div class="line"><div class="doc"><p>Push the current annotation line onto the array of previous annotation lines, until we get to the next source code line.</p>
+<div class="line"><div class="doc"><p>Push the current annotation line onto the array of previous annotation lines,
+until we get to the next source code line.</p>
 </div><pre class="source javascript"><strong class="lineNumber">109</strong>    const pushComment = line =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">110</strong>        if (line.trim().startsWith(config.annotationStartMark)) {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">111</strong>            docLine = line.replace(config.annotationStartMark, '').trim();</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">112</strong>        } else {</pre></div>
-<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">113</strong>            docLine += ' ' + line.replace(config.annotationContinueMark, '').trim();</pre></div>
+<div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">113</strong>            docLine += '\n' + line.replace(config.annotationContinueMark, '').trim();</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">114</strong>        }</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">115</strong>    };</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">116</strong></pre></div>
@@ -139,7 +155,8 @@
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">136</strong>    return linePairs;</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">137</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">138</strong></pre></div>
-<div class="line"><div class="doc"><p>This function is called for each source file, to process and save the Litterate version of the source file in the correct place.</p>
+<div class="line"><div class="doc"><p>This function is called for each source file, to process and save
+the Litterate version of the source file in the correct place.</p>
 </div><pre class="source javascript"><strong class="lineNumber">141</strong>const createAndSavePage = (sourcePath, config) =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">142</strong>    const logErr = err =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">143</strong>        if (err) {</pre></div>
@@ -179,7 +196,8 @@
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">177</strong>    });</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">178</strong>}</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">179</strong></pre></div>
-<div class="line"><div class="doc"><p>This whole file exports this single function, which is called with a list of files to process, and the configuration options.</p>
+<div class="line"><div class="doc"><p>This whole file exports this single function, which is called with a list of files
+to process, and the configuration options.</p>
 </div><pre class="source javascript"><strong class="lineNumber">182</strong>const generateLitteratePages = (sourceFiles, config) =&#62; {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">183</strong>    const {</pre></div>
 <div class="line"><div class="doc"></div><pre class="source javascript"><strong class="lineNumber">184</strong>        outputDirectory,</pre></div>

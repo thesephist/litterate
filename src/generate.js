@@ -110,7 +110,7 @@ const linesToLinePairs = (lines, config) => {
         if (line.trim().startsWith(config.annotationStartMark)) {
             docLine = line.replace(config.annotationStartMark, '').trim();
         } else {
-            docLine += ' ' + line.replace(config.annotationContinueMark, '').trim();
+            docLine += '\n' + line.replace(config.annotationContinueMark, '').trim();
         }
     };
 
